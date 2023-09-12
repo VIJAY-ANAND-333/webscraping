@@ -1,43 +1,29 @@
 pipeline {
     agent any
-
+    
+    environment {
+        // Define any environment variables needed for your build process
+        IMAGE_NAME = "Vijay"
+        DOCKERFILE_PATH = "E:\nigga\Airflow"
+    }
+    
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your code from your repository
+                // Checkout your source code from your version control system (e.g., Git)
                 checkout scm
             }
         }
-
-        stage('Setup Environment') {
+        
+        stage('Build Docker Image') {
             steps {
-                // Create a virtual environment on Windows
-                bat 'python -m venv venv'
-
-                // Activate the virtual environment on Windows
-                bat 'venv\\Scripts\\activate'
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                // Install required Python packages
-                bat 'pip install -r requirements.txt'
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                // Run unit tests using unittest or pytest
-                bat 'python -m unittest discover -s tests -p "*_test.py"'
-            }
-        }
-
-        stage('Run Web Scraping Script') {
-            steps {
-                // Run your web scraping script
-                bat 'python webscrapingapp.py'
+                script {
+                    // Build the Docker image
+                    docker.build(env.IMAGE_NAME, "--file ${env.DOCKERFILE_PATH} .")
+                }
             }
         }
     }
+    
+
 }
